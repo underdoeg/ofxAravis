@@ -9,40 +9,20 @@ void ofxAravis::onNewBuffer(ArvStream *stream, ofxAravis* aravis){
 		if (arv_buffer_get_status (buffer) == ARV_BUFFER_STATUS_SUCCESS){
 			auto w = arv_buffer_get_image_width(buffer);
 			auto h = arv_buffer_get_image_height(buffer);
-			auto format = arv_buffer_get_image_pixel_format(buffer);
 
-			cv::Mat matRgb(h, w, CV_8UC3);
+			aravis->setPixels(buffer, w, h, ofImageType::OF_IMAGE_GRAYSCALE);
 
-			switch(format){
-			case ARV_PIXEL_FORMAT_BAYER_RG_8:
-			{
-				cv::Mat matBayer(h, w, CV_8UC1, const_cast<void*>(arv_buffer_get_data(buffer, nullptr)));
-				cv::cvtColor(matBayer, matRgb, CV_BayerRG2BGR);
-			}
-				break;
-			default:
-				ofLogError("ofxARavis") << "Unknown pixel format";
-			}
-
-			//cv::Mat matBayer(h, w, CV_8UC1, const_cast<void*>(arv_buffer_get_data(buffer, nullptr)));
-			//cv::Mat matRgb(h, w, CV_8UC3);
-			//cv::cvtColor(matBayer, matRgb, CV_BayerRG2BGR);
-
-			// flip it
-			//cv::Mat matRgbFlip = matRgb.clone();
-			//cv::flip(matRgb, matRgbFlip, 1);
-
-			aravis->setPixels(matRgb);
 		}
 		arv_stream_push_buffer (stream, buffer);
 	}
 }
 
-void ofxAravis::setPixels(cv::Mat &m){
-	mutex.lock();
-	mat = m.clone();
-	mutex.unlock();
+void ofxAravis::setPixels(ArvBuffer *buffer, int w, int h, ofImageType imageType){
+	this->imageType = imageType;
+	this->w = w;
+	this->h = h;
 	bFrameNew = true;
+	this->buffer = buffer;
 }
 
 
@@ -94,7 +74,7 @@ bool ofxAravis::setup(){
 
 	arv_camera_get_region(camera, &x, &y, &width, &height);
 
-	image.allocate(width, height, ofImageType::OF_IMAGE_COLOR);
+	image.allocate(width, height, ofImageType::OF_IMAGE_GRAYSCALE);
 
 	auto payload = arv_camera_get_payload (camera);
 
@@ -112,7 +92,9 @@ bool ofxAravis::setup(){
 		g_signal_connect (stream, "new-buffer", G_CALLBACK (onNewBuffer), this);
 		arv_stream_set_emit_signals (stream, TRUE);
 	}
-
+	else {
+		ofLogError("ofxARavis") << "create stream failed";
+	}
 	return true;
 }
 
@@ -145,7 +127,7 @@ void ofxAravis::update(){
 	if(bFrameNew){
 		bFrameNew = false;
 		mutex.lock();
-		image.setFromPixels(mat.data, width, height, ofImageType::OF_IMAGE_COLOR);
+        image.setFromPixels((unsigned char*)(arv_buffer_get_data(buffer, nullptr)), w, h, imageType);
 		mutex.unlock();
 	}
 }

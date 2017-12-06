@@ -56,7 +56,7 @@ public:
 
 private:
 	static void onNewBuffer(ArvStream *stream, ofxAravis* aravis);
-	void setPixels(cv::Mat& mat);
+	void setPixels(ArvBuffer *buffer, int w, int h, ofImageType imageType);
 
 	int targetX, targetY, targetWidth, targetHeight;
 	int x, y, width, height;
@@ -66,4 +66,7 @@ private:
 	std::atomic_bool bFrameNew;
 	ofImage image;
 	cv::Mat mat;
+	int w, h;
+	ofImageType imageType;
+	ArvBuffer *buffer;
 };
