@@ -41,7 +41,8 @@ public:
 	void setSize(int width, int height);
 	void setRegion(int x, int y, int width, int height);
 	void setPixelFormat(ArvPixelFormat format);
-	bool setup();
+    void setFrameRate(int fps = 60);
+	bool setup(int cam_nr = 0);
 	bool isInitialized();
 	void stop();
 
@@ -50,9 +51,11 @@ public:
 	void update();
 
 	void draw(int x=0, int y=0, int w=0, int h=0);
+    ofTexture& getTexture();
 
 	ArvCamera* camera;
 	ArvStream* stream;
+    std::vector<std::string> device_IDs;
 
 private:
 	static void onNewBuffer(ArvStream *stream, ofxAravis* aravis);

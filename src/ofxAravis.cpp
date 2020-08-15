@@ -74,15 +74,30 @@ void ofxAravis::setPixelFormat(ArvPixelFormat format){
 	targetPixelFormat = format;
 }
 
-bool ofxAravis::setup(){
+bool ofxAravis::setup(int cam_nr){
 	stop();
 
 	bFrameNew = false;
+    
+    arv_update_device_list();
+    
+    for (int i = 0; i < arv_get_n_devices(); i++)
+    {
+        device_IDs.push_back(arv_get_device_id(i));
+    }
+    ofLog() << "gigE camera list: ";
+    for (auto ID : device_IDs) ofLog() << "ID: " << ID;
 
 	ofLogNotice("ofxAravis") << "Start grabber";
 
-	camera = arv_camera_new(nullptr);
-
+    if (cam_nr < device_IDs.size()){
+        camera = arv_camera_new(arv_get_device_id(cam_nr));
+        ofLog() << "Opened camera: " << arv_get_device_id(cam_nr);
+        if (!camera) ofLogError("ofxAravis: ") << "there was a problem opening camera " << arv_get_device_id(cam_nr);
+    } else {
+        camera = arv_camera_new(nullptr);
+    }
+    
 	if(!camera){
 		ofLogError("ofxAravis") << "No camera found";
 		return false;
@@ -93,6 +108,8 @@ bool ofxAravis::setup(){
 	arv_camera_set_pixel_format(camera, targetPixelFormat);
 
 	arv_camera_get_region(camera, &x, &y, &width, &height);
+    
+    arv_camera_set_frame_rate (camera, 60);
 
 	image.allocate(width, height, ofImageType::OF_IMAGE_COLOR);
 
@@ -131,6 +148,7 @@ void ofxAravis::stop(){
 	arv_camera_stop_acquisition(camera);
 	g_object_unref(stream);
 	g_object_unref(camera);
+    camera = nullptr;
 }
 
 void ofxAravis::setExposure(double exposure){
@@ -139,6 +157,9 @@ void ofxAravis::setExposure(double exposure){
 
 	arv_camera_set_exposure_time_auto(camera, ARV_AUTO_OFF);
 	arv_camera_set_exposure_time(camera, exposure);
+}
+void ofxAravis::setFrameRate(int fps){
+    arv_camera_set_frame_rate (camera, fps);
 }
 
 void ofxAravis::update(){
@@ -154,4 +175,8 @@ void ofxAravis::draw(int x, int y, int w, int h){
 	if(w == 0) w = width;
 	if(h == 0) h = height;
 	image.draw(x, y, w, h);
+}
+
+ofTexture& ofxAravis::getTexture(){
+    return image.getTexture();
 }
