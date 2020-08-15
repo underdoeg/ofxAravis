@@ -74,19 +74,22 @@ void ofxAravis::setPixelFormat(ArvPixelFormat format){
 	targetPixelFormat = format;
 }
 
-bool ofxAravis::setup(int cam_nr){
-	stop();
-
-	bFrameNew = false;
-    
+std::vector<std::string> ofxAravis::listDevices(){
     arv_update_device_list();
     
     for (int i = 0; i < arv_get_n_devices(); i++)
     {
         device_IDs.push_back(arv_get_device_id(i));
     }
-    ofLog() << "gigE camera list: ";
-    for (auto ID : device_IDs) ofLog() << "ID: " << ID;
+    return device_IDs;
+}
+
+bool ofxAravis::setup(int cam_nr){
+	stop();
+
+	bFrameNew = false;
+    
+    listDevices();
 
 	ofLogNotice("ofxAravis") << "Start grabber";
 

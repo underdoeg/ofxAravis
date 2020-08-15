@@ -42,11 +42,13 @@ public:
 	void setRegion(int x, int y, int width, int height);
 	void setPixelFormat(ArvPixelFormat format);
     void setFrameRate(int fps = 60);
+    void setExposure(double exposure);
+    
+    std::vector<std::string> listDevices();
+    
 	bool setup(int cam_nr = 0);
 	bool isInitialized();
 	void stop();
-
-	void setExposure(double exposure);
 
 	void update();
 
@@ -55,8 +57,7 @@ public:
 
 	ArvCamera* camera;
 	ArvStream* stream;
-    std::vector<std::string> device_IDs;
-
+    
 private:
 	static void onNewBuffer(ArvStream *stream, ofxAravis* aravis);
 	void setPixels(cv::Mat& mat);
@@ -69,4 +70,5 @@ private:
 	std::atomic_bool bFrameNew;
 	ofImage image;
 	cv::Mat mat;
+    std::vector<std::string> device_IDs;
 };
