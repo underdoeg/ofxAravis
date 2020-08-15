@@ -108,6 +108,21 @@ android/armeabi:
 android/armeabi-v7a:	
 
 osx:
+	ADDON_PKG_CONFIG_LIBRARIES = aravis-0.6
+
+	ADDON_LIBS += libs/aravis-0.6/lib/osx/libaravis-0.6.a
+	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libglib-2.0.0.dylib
+	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libgio-2.0.0.dylib 
+	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libgobject-2.0.0.dylib
+	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libgmodule-2.0.0.dylib
+	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libgthread-2.0.0.dylib
+	ADDON_LIBS += /usr/local/Cellar/libusb/1.0.23/lib/libusb-1.0.a
+	ADDON_LIBS += /usr/lib/libxml2.dylib 
+
+
+	ADDON_INCLUDES += /usr/local/include/aravis-0.6/
+	ADDON_INCLUDES += /usr/local/Cellar/glib/2.64.4_2/include/glib-2.0 
+	ADDON_INCLUDES += /usr/local/Cellar/glib/2.64.4_2/lib/glib-2.0/include
     
 ios:
 
