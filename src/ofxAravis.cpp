@@ -74,7 +74,7 @@ void ofxAravis::setPixelFormat(ArvPixelFormat format){
 	targetPixelFormat = format;
 }
 
-std::vector<std::string> ofxAravis::listDevices(){
+std::vector<std::string>& ofxAravis::listDevices(){
     arv_update_device_list();
     
     for (int i = 0; i < arv_get_n_devices(); i++)
@@ -171,6 +171,7 @@ void ofxAravis::update(){
 		mutex.lock();
 		image.setFromPixels(mat.data, width, height, ofImageType::OF_IMAGE_COLOR);
 		mutex.unlock();
+        m_newFrame = true;
 	}
 }
 
@@ -182,4 +183,12 @@ void ofxAravis::draw(int x, int y, int w, int h){
 
 ofTexture& ofxAravis::getTexture(){
     return image.getTexture();
+}
+
+bool ofxAravis::isFrameNew(){
+    if (m_newFrame) {
+        m_newFrame = false;
+        return true;
+    }
+    else return false;
 }

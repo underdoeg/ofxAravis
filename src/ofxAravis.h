@@ -44,11 +44,13 @@ public:
     void setFrameRate(int fps = 60);
     void setExposure(double exposure);
     
-    std::vector<std::string> listDevices();
+    std::vector<std::string>& listDevices();
     
 	bool setup(int cam_nr = 0);
 	bool isInitialized();
-	void stop();
+    bool isFrameNew();
+	
+    void stop();
 
 	void update();
 
@@ -68,6 +70,7 @@ private:
 	//Config<double> targetExposure, targetGain;
 	std::mutex mutex;
 	std::atomic_bool bFrameNew;
+    bool m_newFrame{false};
 	ofImage image;
 	cv::Mat mat;
     std::vector<std::string> device_IDs;
