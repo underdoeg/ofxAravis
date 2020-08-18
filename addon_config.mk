@@ -19,7 +19,7 @@ meta:
 	ADDON_DESCRIPTION = Addon to use Aravis
 	ADDON_AUTHOR = Philip Whitfield
 	ADDON_TAGS = "camera" "linux"
-	ADDON_URL = http://github.com/underdoeg/ofxAravis
+	ADDON_URL = http://github.com/bltzr/ofxAravis
 
 common:
 	# dependencies with other addons, a list of them separated by spaces 
@@ -108,21 +108,21 @@ android/armeabi:
 android/armeabi-v7a:	
 
 osx:
-	ADDON_PKG_CONFIG_LIBRARIES = aravis-0.6
+	#ADDON_PKG_CONFIG_LIBRARIES = aravis-0.6 
 
 	ADDON_LIBS += libs/aravis-0.6/lib/osx/libaravis-0.6.a
-	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libglib-2.0.0.dylib
-	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libgio-2.0.0.dylib 
-	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libgobject-2.0.0.dylib
-	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libgmodule-2.0.0.dylib
-	ADDON_LIBS += /usr/local/Cellar/glib/2.64.4_2/lib/libgthread-2.0.0.dylib
-	ADDON_LIBS += /usr/local/Cellar/libusb/1.0.23/lib/libusb-1.0.a
+	ADDON_LIBS += libs/glib-2.0/lib/osx/libglib-2.0.0.dylib
+	ADDON_LIBS += libs/glib-2.0/lib/osx/libgio-2.0.0.dylib 
+	ADDON_LIBS += libs/glib-2.0/lib/osx/libgobject-2.0.0.dylib
+	ADDON_LIBS += libs/glib-2.0/lib/osx/libgmodule-2.0.0.dylib
+	ADDON_LIBS += libs/glib-2.0/lib/osx/libgthread-2.0.0.dylib
+	ADDON_LIBS += libs/libusb/lib/osx/libusb-1.0.a
 	ADDON_LIBS += /usr/lib/libxml2.dylib 
 
 
-	ADDON_INCLUDES += /usr/local/include/aravis-0.6/
-	ADDON_INCLUDES += /usr/local/Cellar/glib/2.64.4_2/include/glib-2.0 
-	ADDON_INCLUDES += /usr/local/Cellar/glib/2.64.4_2/lib/glib-2.0/include
+	ADDON_INCLUDES += /libs/aravis-0.6/include/aravis-0.6/
+	ADDON_INCLUDES += /libs/glib-2.0/include/glib-2.0 
+	#ADDON_INCLUDES += /usr/local/Cellar/glib/2.64.4_2/lib/glib-2.0/include/
     
 ios:
 
