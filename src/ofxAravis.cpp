@@ -2,6 +2,7 @@
 #include <opencv2/opencv.hpp>
 
 void ofxAravis::onNewBuffer(ArvStream *stream, ofxAravis* aravis){
+	/*
 	ArvBuffer *buffer;
 
 	buffer = arv_stream_try_pop_buffer (stream);
@@ -15,6 +16,41 @@ void ofxAravis::onNewBuffer(ArvStream *stream, ofxAravis* aravis){
 		}
 		arv_stream_push_buffer (stream, buffer);
 	}
+	*/
+	ArvBuffer *buffer;
+
+	buffer = arv_stream_try_pop_buffer (stream);
+	if (buffer != nullptr) {
+		if (arv_buffer_get_status (buffer) == ARV_BUFFER_STATUS_SUCCESS){
+			auto w = arv_buffer_get_image_width(buffer);
+			auto h = arv_buffer_get_image_height(buffer);
+			auto format = arv_buffer_get_image_pixel_format(buffer);
+
+			cv::Mat matRgb(h, w, CV_8UC3);
+
+			switch(format){
+			case ARV_PIXEL_FORMAT_BAYER_RG_8:
+			{
+				cv::Mat matBayer(h, w, CV_8UC1, const_cast<void*>(arv_buffer_get_data(buffer, nullptr)));
+				cv::cvtColor(matBayer, matRgb, CV_BayerRG2BGR);
+			}
+				break;
+			default:
+				ofLogError("ofxARavis") << "Unknown pixel format";
+			}
+
+			//cv::Mat matBayer(h, w, CV_8UC1, const_cast<void*>(arv_buffer_get_data(buffer, nullptr)));
+			//cv::Mat matRgb(h, w, CV_8UC3);
+			//cv::cvtColor(matBayer, matRgb, CV_BayerRG2BGR);
+
+			// flip it
+			//cv::Mat matRgbFlip = matRgb.clone();
+			//cv::flip(matRgb, matRgbFlip, 1);
+
+			aravis->setPixels(matRgb);
+		}
+		arv_stream_push_buffer (stream, buffer);
+	}
 }
 
 void ofxAravis::setPixels(ArvBuffer *buffer, int w, int h, ofImageType imageType){
@@ -25,6 +61,12 @@ void ofxAravis::setPixels(ArvBuffer *buffer, int w, int h, ofImageType imageType
 	this->buffer = buffer;
 }
 
+void ofxAravis::setPixels(cv::Mat &m){
+	mutex.lock();
+	mat = m.clone();
+	mutex.unlock();
+	bFrameNew = true;
+}
 
 ////////////////////////////////////////
 
@@ -128,10 +170,17 @@ void ofxAravis::setExposure(double exposure){
 }
 
 void ofxAravis::update(){
+	/*
 	if(bFrameNew){
 		bFrameNew = false;
 		mutex.lock();
         	image.setFromPixels((unsigned char*)(arv_buffer_get_data(buffer, nullptr)), w, h, imageType);
+		mutex.unlock();
+	}*/
+	if(bFrameNew){
+		bFrameNew = false;
+		mutex.lock();
+		image.setFromPixels(mat.data, width, height, ofImageType::OF_IMAGE_COLOR);
 		mutex.unlock();
 	}
 }

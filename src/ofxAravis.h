@@ -57,6 +57,7 @@ public:
 private:
 	static void onNewBuffer(ArvStream *stream, ofxAravis* aravis);
 	void setPixels(ArvBuffer *buffer, int w, int h, ofImageType imageType);
+	void setPixels(cv::Mat& mat);
 
 	int targetX, targetY, targetWidth, targetHeight;
 	int x, y, width, height;
