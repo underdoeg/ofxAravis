@@ -1,8 +1,8 @@
 #pragma once
 
-extern "C"{
+//extern "C"{
 #include <arv.h>
-}
+//}
 
 #include <mutex>
 #include <atomic>

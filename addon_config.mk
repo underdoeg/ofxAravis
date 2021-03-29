@@ -71,7 +71,7 @@ common:
 linux64:
 	# linux only, any library that should be included in the project using
 	# pkg-config
-	ADDON_PKG_CONFIG_LIBRARIES = aravis-0.6
+	ADDON_PKG_CONFIG_LIBRARIES = aravis-0.8
 
 	
 	# when parsing the file system looking for sources exclude this for all or
@@ -80,12 +80,12 @@ linux64:
 	
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
-    # ADDON_INCLUDES_EXCLUDE = libs/libfreenect/platform/%
+    	# ADDON_INCLUDES_EXCLUDE = libs/libfreenect/platform/%
 	
 linux:
 	# linux only, any library that should be included in the project using
 	# pkg-config
-	ADDON_PKG_CONFIG_LIBRARIES = aravis-0.6
+	ADDON_PKG_CONFIG_LIBRARIES = aravis-0.8
 	
 	# when parsing the file system looking for sources exclude this for all or
 	# a specific platform
@@ -93,7 +93,7 @@ linux:
 	
 	# when parsing the file system looking for include paths exclude this for all or
 	# a specific platform
-    # ADDON_INCLUDES_EXCLUDE = libs/libfreenect/platform/%
+    	# ADDON_INCLUDES_EXCLUDE = libs/libfreenect/platform/%
 	
 win_cb:
 	

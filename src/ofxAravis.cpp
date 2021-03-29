@@ -61,24 +61,26 @@ bool ofxAravis::setup(){
 
 	ofLogNotice("ofxAravis") << "Start grabber";
 
-	camera = arv_camera_new(nullptr);
+	GError *err = nullptr;
+
+	camera = arv_camera_new(nullptr, &err);
 
 	if(!camera){
 		ofLogError("ofxAravis") << "No camera found";
 		return false;
 	}
 
-	arv_camera_set_region(camera, targetX, targetY, targetWidth, targetHeight);
+	arv_camera_set_region(camera, targetX, targetY, targetWidth, targetHeight, &err);
 
-	arv_camera_set_pixel_format(camera, targetPixelFormat);
+	arv_camera_set_pixel_format(camera, targetPixelFormat, &err);
 
-	arv_camera_get_region(camera, &x, &y, &width, &height);
+	arv_camera_get_region(camera, &x, &y, &width, &height, &err);
 
 	image.allocate(width, height, ofImageType::OF_IMAGE_GRAYSCALE);
 
-	auto payload = arv_camera_get_payload (camera);
+	auto payload = arv_camera_get_payload (camera, &err);
 
-	stream = arv_camera_create_stream (camera, nullptr, nullptr);
+	stream = arv_camera_create_stream (camera, nullptr, nullptr, &err);
 	if (stream != nullptr) {
 
 		// Push 50 buffer in the stream input buffer queue
@@ -86,7 +88,7 @@ bool ofxAravis::setup(){
 			arv_stream_push_buffer (stream, arv_buffer_new (payload, nullptr));
 
 		//start stream
-		arv_camera_start_acquisition (camera);
+		arv_camera_start_acquisition (camera, &err);
 
 		// Connect the new-buffer signal
 		g_signal_connect (stream, "new-buffer", G_CALLBACK (onNewBuffer), this);
@@ -109,8 +111,9 @@ void ofxAravis::stop(){
 	ofLogNotice("ofxAravis") << "Stop";
 
 	arv_stream_set_emit_signals(stream, FALSE);
-
-	arv_camera_stop_acquisition(camera);
+	GError *err = nullptr;
+	
+	arv_camera_stop_acquisition(camera, &err);
 	g_object_unref(stream);
 	g_object_unref(camera);
 }
@@ -118,16 +121,17 @@ void ofxAravis::stop(){
 void ofxAravis::setExposure(double exposure){
 	if(!isInitialized())
 		return;
-
-	arv_camera_set_exposure_time_auto(camera, ARV_AUTO_OFF);
-	arv_camera_set_exposure_time(camera, exposure);
+	GError *err = nullptr;
+	
+	arv_camera_set_exposure_time_auto(camera, ARV_AUTO_OFF, &err);
+	arv_camera_set_exposure_time(camera, exposure, &err);
 }
 
 void ofxAravis::update(){
 	if(bFrameNew){
 		bFrameNew = false;
 		mutex.lock();
-        image.setFromPixels((unsigned char*)(arv_buffer_get_data(buffer, nullptr)), w, h, imageType);
+        	image.setFromPixels((unsigned char*)(arv_buffer_get_data(buffer, nullptr)), w, h, imageType);
 		mutex.unlock();
 	}
 }
