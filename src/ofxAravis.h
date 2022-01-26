@@ -33,8 +33,12 @@
 //	Type value;
 //};
 
+#include <chrono>
+
 class ofxAravis{
 public:
+	using Clock = std::chrono::high_resolution_clock;
+
 	ofxAravis();
 	~ofxAravis();
 
@@ -50,13 +54,14 @@ public:
 	void update();
 
 	void draw(int x=0, int y=0, int w=0, int h=0);
+	Clock::time_point last_frame();
 
 	ArvCamera* camera;
 	ArvStream* stream;
 
 private:
 	static void onNewBuffer(ArvStream *stream, ofxAravis* aravis);
-	void setPixels(ArvBuffer *buffer, int w, int h, ofImageType imageType);
+//	void setPixels(ArvBuffer *buffer, int w, int h, ofImageType imageType);
 	void setPixels(cv::Mat& mat);
 
 	int targetX, targetY, targetWidth, targetHeight;
@@ -70,4 +75,5 @@ private:
 	int w, h;
 	ofImageType imageType;
 	ArvBuffer *buffer;
+	Clock::time_point p_last_frame;
 };
