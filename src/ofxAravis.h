@@ -48,6 +48,7 @@ public:
 	bool setup();
 	bool isInitialized();
 	void stop();
+	double getTemperature();
 
 	void setExposure(double exposure);
 

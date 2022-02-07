@@ -197,3 +197,15 @@ ofxAravis::Clock::time_point ofxAravis::last_frame() {
 	mutex.unlock();
 	return p;
 }
+
+double ofxAravis::getTemperature() {
+	ArvDevice *dev = arv_camera_get_device(camera);
+	if (!dev) return 0;
+	GError *err = nullptr;
+	double val = arv_device_get_float_feature_value(dev, "DeviceTemperature", &err);
+	if (err) {
+		ofLogError("ofxAravis") << "Could not read temperature " << err->message;
+		return 0;
+	}
+	return val;
+}
