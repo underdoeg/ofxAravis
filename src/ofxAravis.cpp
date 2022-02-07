@@ -199,6 +199,7 @@ ofxAravis::Clock::time_point ofxAravis::last_frame() {
 }
 
 double ofxAravis::getTemperature() {
+	if (!camera) return 0;
 	ArvDevice *dev = arv_camera_get_device(camera);
 	if (!dev) return 0;
 	GError *err = nullptr;
